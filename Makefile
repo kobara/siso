@@ -1,5 +1,5 @@
 PROG=siso
-SRC=main.c siso.c target.c session.c connection.c debug.c misc.c iscsi.c scsi.c vol.c volstd.c config.c login.c
+SRC=main.c siso.c target.c session.c connection.c misc.c iscsi.c scsi.c vol.c volstd.c config.c login.c
 OBJS=$(patsubst %.c,%.o,$(SRC))
 DEPENDS=$(patsubst %.c,%.d,$(SRC))
 

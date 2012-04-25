@@ -1,0 +1,84 @@
+                ****************************************
+                      SISO - Simple iSCSI Storage
+                ****************************************
+
+Introduction
+--------------------
+"SISO"(Simple iSCSI Storage) is iSCSI software target on Linux.
+It is aimed at studying an iSCSI/SCSI and trying to adapt some ideas
+about storage technology.
+
+I refered code from an iSCSI Enterprise Target.
+
+
+Installation
+--------------------
+SISO is user-land program. To build SISO:
+
+	> make
+
+
+Configuration
+--------------------
+SISO is configured via configuration file "siso.conf", which is
+located in same directory as SISO binary.
+
+See sample configuration file "siso.conf" for the current syntax.
+
+Note that you must edit the configuration file before starting the
+siso.
+
+
+Starting
+--------------------
+To execute SISO:
+
+	> siso
+
+SISO has few command-line options. You can check these options:
+
+	> siso -u
+
+
+Stopping
+--------------------
+To stop SISO, press CTRL+C.
+
+
+Notice
+--------------------
+Current version of SISO is "quick-hack".
+It has these key limitations:
+  - NOT support multi-connection (connection per session is 1)
+  - NOT support TaskManagementFunction.
+  - NOT support long-sector (e.g. 4KB/sector)
+  - supported authentication method is only CHAP. (and "None")
+
+And not implemented error-handlers.
+
+I've verified intterconnectivity with:
+  - Microsoft Initiattor w/ Windows XP Professional (32bit)
+  - VMware vSphere 5.0
+  - CentOS 6.2
+
+
+Contact
+--------------------
+Contributions are cordially invited.
+Please send bug reports, impressions, feature requests, etc. to my
+E-mail address <makoto.kobara _at_ gmail.com> or facebook <makoto.kobara>
+
+
+Future Plans (Ideas)
+--------------------
+  - MacOS X initiator support
+  - port to Microsoft Windows Server, etc.
+  - Write back caching(with SSD)
+  - snapshot, de-dupe, thin-provisioning
+  - distributed storage,
+      ....
+
+Thank you.
+
+Makoto Kobara
+Tokyo, Japan

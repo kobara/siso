@@ -1,3 +1,27 @@
+/*
+ * SISO : Simple iSCSI Storage
+ * 
+ * configuration file parser.
+ *
+ * Copyright(C) 2012 Makoto KOBARA <makoto.kobara _at_ gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ */
+
+
 #include <stdio.h>   // fopen, fgets, fclose
 #include <string.h>  // strlen, strnlen
 #include <strings.h> // strcasecmp
@@ -34,7 +58,7 @@ static struct iscsi_target *create_target(
 int siso_load_config(struct siso_info *siso, const char *pathname)
 {
     struct config_perser cfg_perser[] = {
-	{"TargetName", &perser_target_name},
+	{"Target", &perser_target_name},
 	{"Port", &perser_port},
 	{"Username", &perser_username},
 	{"Secret", &perser_secret},
@@ -91,8 +115,6 @@ int siso_load_config(struct siso_info *siso, const char *pathname)
 	}
     }
 
-    log_dbg1("\n");
-
     // Check and set discovery session's authentication method
     rv = check_auth_param(siso->username, siso->secret, &(siso->auth));
     if (rv) {
@@ -108,8 +130,6 @@ int siso_load_config(struct siso_info *siso, const char *pathname)
 	goto failure;
     }
 
-    log_dbg1("\n");
-
     do_each_list_elem(struct iscsi_target *, &(siso->list_target), target, listelem) {
 	// Check LU as LUN=0
 	log_dbg1("target=%p\n", target);
@@ -118,16 +138,12 @@ int siso_load_config(struct siso_info *siso, const char *pathname)
 		    target->name);
 	    goto failure;
 	}
-	log_dbg1("\n");
 	// Check and set normal session's authentication method.
 	rv = check_auth_param(target->username, target->secret, &(target->auth));
 	if (rv) {
 	    goto failure;
 	}
-	log_dbg1("\n");
     } while_each_list_elem(struct iscsi_target *, &(siso->list_target), target, listelem);
-
-    log_dbg1("\n");
 
     fclose(fp);
 

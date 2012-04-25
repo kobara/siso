@@ -6,7 +6,6 @@
 #include "target.h"
 #include "iscsi.h"
 #include "misc.h"
-#include "debug.h"
 #include "siso.h"
 
 static struct iscsi_pdu *create_login_rsp(
@@ -481,7 +480,6 @@ struct iscsi_pdu *exec_csg_operational(
 	    log_wrn("SessionType is not specified, so use \"Normal\".\n");
 	    session_type = ISCSI_SESSION_NORMAL;
 	}
-	log_dbg1("\n");
 	conn->session_type = session_type;
 	if (session_type == ISCSI_SESSION_NORMAL && target_name == NULL) {
 	    log_err("Illegal LoginRequest (CSG=0x%02X, SessionType=Discovery, TargetName but is not specified(%d))\n",
@@ -489,7 +487,6 @@ struct iscsi_pdu *exec_csg_operational(
 	    goto failure_init;
 	}
 	// Bind iSCSI connection to iSCSI target/session.
-	log_dbg1("\n");
 	conn->cid = pdu_req->cid;
 	if (session_type == ISCSI_SESSION_NORMAL) {
 	    rv = iscsi_bind_connection(target_name, pdu_req->sid, conn);
@@ -502,7 +499,6 @@ struct iscsi_pdu *exec_csg_operational(
 	    }
 	    ASSERT((conn->target != NULL), "conn->target == NULL\n");
 	}
-	log_dbg1("\n");
 	// Check authentication requirement
 	if (is_auth_required(conn, conn->session_type)) {
 	    log_err("Illegal LoginRequest (CHAP authentication is required).\n");

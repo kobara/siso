@@ -1,13 +1,37 @@
+/*
+ * SISO : Simple iSCSI Storage
+ * 
+ * miscellaneous functions.
+ *
+ * Copyright(C) 2012 Makoto KOBARA <makoto.kobara _at_ gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ */
+
+
 #include <unistd.h> // fcntl
 #include <fcntl.h>  // fcntl
 #include <string.h> // strlen
 #include <errno.h>
 #include <stdarg.h> // va_start, va_end, va_list
+#include <ctype.h>
 #include <stdio.h>  // freopen
 #include <time.h>   // ctime, time
 #include <sys/time.h> // gettimeofday
 #include "misc.h"
-#include "debug.h"
 
 enum log_level g_loglv = LOGLV_INFO; //< logging level
 pthread_mutex_t g_lock_logger;       //< logger lock
@@ -553,3 +577,55 @@ uint64 get_time_in_usec(void)
     usec = tv.tv_sec * 1000*1000 + tv.tv_usec;
     return usec;
 } // get_time_in_usec
+
+
+void print_hex(char *buf, int len)
+{
+        int i,l;
+        unsigned char c;
+
+        if (len <=0 || len > 0xFFFF) {
+                return;
+        }
+
+        /* print header line */
+        // line number
+        printf("     ");
+        // hex dump
+        for (i = 0; i < 16; i++) {
+                printf( "  %X", i);
+        }
+        // ascii dump
+        printf(" | ");
+        for (i = 0; i < 16; i++) {
+                printf( "%X", i);
+        }
+        printf("\n");
+
+        // print data line
+        for (l = 0; l < (len-1)/16+1; l++) {
+                // line number
+                printf("%04X ", l*16);
+                // hex dump
+                for (i = 0; i < 16 && l*16+i < len; i++) {
+                        c = ((unsigned char *)buf)[l*16 + i];
+                        printf(" %02X", c);
+                }
+                for (; i < 16; i++) {
+                        printf("   ");
+                }
+                // ascii dump
+                printf(" | ");
+                for (i = 0; i < 16 && l*16+i < len; i++) {
+                        c = ((unsigned char *)buf)[l*16 + i];
+                        if (isgraph(c)) {
+                                printf("%c", c);
+                        } else {
+                                printf(" ");
+                        }
+                }
+                printf("\n");
+        }
+
+        return;
+} // print_hex
